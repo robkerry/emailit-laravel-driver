@@ -3,3 +3,7 @@ composer.lock
 vendor
 .idea
 .phpunit.result.cache
+*.code-workspace
+.DS_Store
+.env
+*.log

@@ -1,27 +1,26 @@
 <?php
 
-namespace MailerSend\LaravelDriver;
+namespace RobKerry\EmailitLaravelDriver;
 
 use Illuminate\Mail\MailManager;
-use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
-use MailerSend\MailerSend;
+use Illuminate\Support\Arr;
+use RobKerry\EmailitLaravelDriver\EmailitTransport;
 
 class LaravelDriverServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->app->make(MailManager::class)->extend('mailersend', function (array $config) {
-            $config = array_merge($this->app['config']->get('mailersend-driver', []), $config);
+        $this->app->make(MailManager::class)->extend('emailit', function (array $config) {
+            $config = array_merge($this->app['config']->get('emailit', []), $config);
 
-            $mailersend = new MailerSend([
+            $emailit = [
                 'api_key' => Arr::get($config, 'api_key'),
                 'host' => Arr::get($config, 'host'),
                 'protocol' => Arr::get($config, 'protocol'),
                 'api_path' => Arr::get($config, 'api_path'),
-            ]);
-
-            return new MailerSendTransport($mailersend);
+            ];
+            return new EmailitTransport($emailit);
         });
 
         if ($this->app->runningInConsole()) {
@@ -33,6 +32,6 @@ class LaravelDriverServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/mailersend-driver.php', 'mailersend-driver');
+        $this->mergeConfigFrom(__DIR__.'/../config/emailit.php', 'emailit');
     }
 }
