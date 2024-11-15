@@ -2,6 +2,8 @@
 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE.md)
 
+This PHP package provides a native mail driver for Laravel applications. Once installed and configured, Mailers are routed via the Emailit API.
+
 # Table of Contents
 
 * [Installation](#installation)
