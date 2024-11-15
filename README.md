@@ -26,31 +26,36 @@ You can install the package via composer:
 composer require robkerry/emailit-laravel-driver
 ```
 
-After that, you need to set `EMAILIT_API_KEY` in your `.env` file:
+If you'd like to publish the config file, you can do that using:
+```bash
+php artisan vendor:publish --tag=emailit-config
+```
+
+Next, you need to set `EMAILIT_API_KEY` in your `.env` file:
 
 ```dotenv
 EMAILIT_API_KEY=
 ```
 
-Add Emailit as a Laravel Mailer in `config/mail.php` in `mailers` array:
-
-```php
-'emailit' => [
-    'transport' => 'emailit',
-],
-```
-
-And set environment variable `MAIL_MAILER` in your `.env` file
+And set the environment variable `MAIL_MAILER` in your `.env` file
 
 ```dotenv
 MAIL_MAILER=emailit
 ```
 
-Also, double check that your `FROM` data is filled in `.env`:
+Then, double check that your `FROM` data is filled in `.env`:
 
 ```dotenv
 MAIL_FROM_ADDRESS=app@yourdomain.com
 MAIL_FROM_NAME="App Name"
+```
+
+Lastly, add Emailit as a Laravel Mailer in `config/mail.php` in the `mailers` array:
+
+```php
+'emailit' => [
+    'transport' => 'emailit',
+],
 ```
 
 <a name="thanks"></a>

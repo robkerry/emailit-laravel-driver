@@ -26,7 +26,7 @@ class LaravelDriverServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/emailit.php' => config_path('emailit.php'),
-            ], 'config');
+            ], 'emailit-config');
         }
     }
 
