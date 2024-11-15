@@ -88,7 +88,7 @@ class EmailitTransport implements TransportInterface
         foreach ($message->getAttachments() as $attachment) {
             $attachments[] = [
                 'filename' => $attachment->getPreparedHeaders()->get('content-disposition')?->getParameter('filename'),
-                'content' => $attachment->getBody(),
+                'content' => base64_encode($attachment->getBody()),
                 'content_type' => $attachment->getMediaType(),
             ];
         }
