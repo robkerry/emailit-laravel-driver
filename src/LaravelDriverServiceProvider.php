@@ -16,16 +16,16 @@ class LaravelDriverServiceProvider extends ServiceProvider
 
             $emailit = [
                 'api_key' => Arr::get($config, 'api_key'),
-                'host' => Arr::get($config, 'host'),
-                'protocol' => Arr::get($config, 'protocol'),
-                'api_path' => Arr::get($config, 'api_path'),
+                'host' => Arr::get($config, 'host') ?? 'api.emailit.com',
+                'protocol' => Arr::get($config, 'protocol') ?? 'https',
+                'api_path' => Arr::get($config, 'api_path') ?? 'v1',
             ];
             return new EmailitTransport($emailit);
         });
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('laravel-driver.php'),
+                __DIR__.'/../config/emailit.php' => config_path('emailit.php'),
             ], 'config');
         }
     }

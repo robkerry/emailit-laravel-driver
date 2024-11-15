@@ -21,8 +21,12 @@ class EmailitTransport implements TransportInterface
     {
         $payload = [];
 
-        $payload['text'] = $message->getTextBody();
-        $payload['html'] = $message->getHtmlBody();
+        if ( !empty($message->getTextBody()) ) {
+            $payload['text'] = $message->getTextBody();
+        }
+        if ( !empty($message->getHtmlBody()) ) {
+            $payload['html'] = $message->getHtmlBody();
+        }
 
         $payload['from'] = $this->getFrom($message);
         $payload['reply_to'] = $this->getReplyTo($message);
@@ -33,13 +37,13 @@ class EmailitTransport implements TransportInterface
 
         $payload['attachments'] = $this->getAttachments($message);
 
-        $api_path = $this->config->protocol.'://'.$this->config->host.'/'.$this->config->api_path;
-        $api_endpoint = $api_path.'/emails';
-        $api_key = $this->config->api_key;
+        $api_endpoint = $this->config['protocol'].'://'.$this->config['host'].'/'.$this->config['api_path'].'/emails';
+        $api_key = $this->config['api_key'];
 
-        $response = Http::withToken($api_key)->retry(3, 500)->post($api_endpoint, $payload);
-
-        if ($response->failed()) {
+        try{
+            $response = Http::withToken($api_key)->acceptJson()->post($api_endpoint, $payload);
+        }
+        catch (\Exception $e) {
             $message = $response->body() ?? 'No error message provided';
             throw new TransportException($message, $response->status());
         }
@@ -61,17 +65,19 @@ class EmailitTransport implements TransportInterface
         $reply_to = $message->getReplyTo();
 
         if (count($reply_to) > 0) {
-            return ($reply_to[0]->getName() === null) ? $reply_to[0]->getAddress() : $reply_to[0]->getName().' <'.$reply_to[0]->getAddress().'>';
+            return $reply_to[0]->getAddress();
         }
-        return config('mail.from.name').' <'.config('mail.from.address').'>';
+        return config('mail.from.address');
     }
 
     protected function getTo(RawMessage $message): string
     {
         $to = $message->getTo();
 
-        if (count($to) > 0) {
-            return ($to[0]->getName() === null) ? $to[0]->getAddress() : $to[0]->getName().' <'.$to[0]->getAddress().'>';
+        if ( empty($to[0]->getName()) ) {
+            return $to[0]->getAddress();
+        } else {
+            return $to[0]->getName().' <'.$to[0]->getAddress().'>';
         }
     }
 
